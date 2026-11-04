@@ -1,4 +1,4 @@
-package dev.guitupinamba.igreja
+package com.ieqcinturaoverde.app
 
 import android.app.Application
 import android.content.res.Configuration

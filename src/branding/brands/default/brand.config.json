@@ -3,7 +3,7 @@
   "name": "IEQ - Cinturão Verde",
   "shortName": "IEQ - Cinturão Verde",
   "tagline": "VIDA EM IGREJA",
-  "appIdentifier": "dev.guitupinamba.igreja",
+  "appIdentifier": "com.ieqcinturaoverde.app",
   "scheme": "comunidade",
   "splashBackground": "#f6f4ed",
   "colors": {

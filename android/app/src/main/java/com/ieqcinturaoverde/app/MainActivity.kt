@@ -1,4 +1,4 @@
-package dev.guitupinamba.igreja
+package com.ieqcinturaoverde.app
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

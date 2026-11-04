@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'dev.guitupinamba.igreja'
+    namespace 'com.ieqcinturaoverde.app'
     defaultConfig {
-        applicationId 'dev.guitupinamba.igreja'
+        applicationId 'com.ieqcinturaoverde.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
