@@ -6,7 +6,7 @@ const REFRESH_KEY = "igreja.mobile.refresh";
 const PUSH_TOKEN_KEY = "igreja.mobile.expoPushToken";
 
 export class ApiError extends Error {
-  constructor(public status: number, message: string, public fields: Record<string, string> = {}) {
+  constructor(public status: number, message: string, public fields: Record<string, string> = {}, public code?: string) {
     super(message);
   }
 }
@@ -36,7 +36,7 @@ async function decode<T>(response: Response): Promise<T> {
       422: "Revise os dados informados.",
       429: "Muitas tentativas. Aguarde alguns minutos.",
     };
-    throw new ApiError(response.status, messages[response.status] || "Não foi possível concluir.", payload?.error?.fields || {});
+    throw new ApiError(response.status, messages[response.status] || "Não foi possível concluir.", payload?.error?.fields || {}, payload?.error?.code);
   }
   return payload as T;
 }
@@ -111,10 +111,24 @@ export function authorizationHeaders(): Record<string, string> {
   return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 }
 
-export async function api<T>(path: string, method = "GET", body?: object): Promise<T> {
+export type AccountDeletionAccepted = {
+  message: string;
+  reference: string;
+};
+
+export async function requestAccountDeletion() {
+  try {
+    return await api<AccountDeletionAccepted>("/profile/account-deletion-request", "POST", { confirm: true }, 202);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) await clearSession();
+    throw error;
+  }
+}
+
+export async function api<T>(path: string, method = "GET", body?: object, expectedStatus?: number): Promise<T> {
   const send = () => fetch(`${API_URL}${path}`, {
     method,
-    headers: { ...authorizationHeaders(), ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
+    headers: { Accept: "application/json", ...authorizationHeaders(), ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
   try {
@@ -122,6 +136,9 @@ export async function api<T>(path: string, method = "GET", body?: object): Promi
     if (response.status === 401) {
       await restoreSession();
       response = await send();
+    }
+    if (response.ok && expectedStatus !== undefined && response.status !== expectedStatus) {
+      throw new ApiError(response.status, "O servidor retornou uma resposta inesperada.");
     }
     return await decode<T>(response);
   } catch (error) {
