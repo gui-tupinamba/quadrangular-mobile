@@ -197,7 +197,7 @@ export default function SignIn() {
             ]}
           >
             <Text style={styles.loginButtonText}>
-              {busy ? "Entrando…" : "Entrar na comunidade"}
+              {busy ? "Entrando..." : "Entrar na comunidade"}
             </Text>
 
             {!busy ? (
@@ -228,9 +228,12 @@ export default function SignIn() {
 
 const styles = StyleSheet.create({
   logoContainer: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     width: 64,
     height: 64,
-
+    borderWidth: 2,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
